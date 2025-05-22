@@ -35,7 +35,7 @@ namespace Movies.Application.Repositories
                 return Task.FromResult(false);
             }
             _movie[movieIndex] = movie;
-            return Task.FromResult(false);
+            return Task.FromResult(true);
         }
         public Task<bool> DeleteAsync(Guid id)
         {
