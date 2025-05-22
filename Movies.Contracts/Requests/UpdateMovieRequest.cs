@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Movies.Contracts.Requests
 {
-    class UpdateMovieRequest
+    public class UpdateMovieRequest
     {
         public required string Title { get; init; }
         public required int YearOfRelease { get; init; }

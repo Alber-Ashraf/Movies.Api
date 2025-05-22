@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Movies.Contracts.Responses
 {
-    class MoviesResponse
+    public class MoviesResponse
     {
         public required IEnumerable<MovieResponse> Movies { get; init; } = Enumerable.Empty<MovieResponse>();
     }
