@@ -13,7 +13,7 @@ namespace Movies.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddSingleton<IMovieRepository, MovieRepository>();
             return services;
         }
     }
