@@ -1,5 +1,7 @@
 
+using System.Threading.Tasks;
 using Movies.Application;
+using Movies.Application.DataBase;
 using Movies.Application.Repositories;
 using Movies.Application.Repositories.IRepositories;
 
@@ -7,11 +9,12 @@ namespace Movies.Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            var config = builder.Configuration;
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -19,6 +22,7 @@ namespace Movies.Api
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddApplication();
+            builder.Services.AddDatabase(config["Database:ConnectionString"]!);
 
             var app = builder.Build();
 
@@ -35,6 +39,10 @@ namespace Movies.Api
 
 
             app.MapControllers();
+
+            // Initialize the database
+            var dbInitializer = app.Services.GetRequiredService<DbInitializer>();
+            await dbInitializer.InitializeAsync();  
 
             app.Run();
         }
