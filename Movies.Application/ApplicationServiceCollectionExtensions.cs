@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Movies.Application.DataBase;
 using Movies.Application.Repositories;
@@ -17,7 +18,8 @@ namespace Movies.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddSingleton<IMovieRepository, MovieRepository>();
-            services.AddSingleton<IMovieService, MovieService>();
+            services.AddScoped<IMovieService, MovieService>();
+            services.AddValidatorsFromAssemblyContaining<IApplicationMarcker>();
             return services;
         }
         public static IServiceCollection AddDatabase(this IServiceCollection services, string connectionString)
