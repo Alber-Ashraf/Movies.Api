@@ -15,10 +15,10 @@ namespace Movies.Application.DataBase
         {
             _connectionString = connectionString;
         }
-        public async Task<DbConnection> CreateConnectionAsync()
+        public async Task<DbConnection> CreateConnectionAsync(CancellationToken token = default)
         {
             var connection = new NpgsqlConnection(_connectionString);
-            await connection.OpenAsync();
+            await connection.OpenAsync(token);
             return connection;
         }
     }
