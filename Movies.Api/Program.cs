@@ -45,6 +45,13 @@ namespace Movies.Api
             {
                 x.AddPolicy(AuthConstants.AdminUserPolicyName,
                         p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
+
+                x.AddPolicy(AuthConstants.TrustedMenmberPolicyName, 
+                    p => p.RequireAssertion(context =>
+                        context.User.HasClaim(c => c.Type == AuthConstants.TrustedMemberClaimName &&
+                                                   c.Value == "true") ||
+                        context.User.HasClaim(c => c.Type == AuthConstants.AdminUserClaimName &&
+                                                   c.Value == "true")));
             });
 
             builder.Services.AddControllers();
