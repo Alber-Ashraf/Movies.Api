@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Mapping;
 using Movies.Application;
@@ -40,7 +41,11 @@ namespace Movies.Api
                 };
             });
 
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthorization(x =>
+            {
+                x.AddPolicy(AuthConstants.AdminUserPolicyName,
+                        p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

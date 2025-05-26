@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Movies.Api.Controllers
 {
-    [Authorize]
     [ApiController]
     public class MoviesController : ControllerBase
     {
@@ -20,6 +19,7 @@ namespace Movies.Api.Controllers
             _movieService = movieService;
         }
 
+        [Authorize("Admin")]
         [HttpPost(ApiEndpoints.Movies.Create)]
         public async Task<IActionResult> Create([FromBody]CreateMovieRequest request, CancellationToken token)
         {
@@ -43,6 +43,7 @@ namespace Movies.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         [HttpGet(ApiEndpoints.Movies.GetAll)]
         public async Task<IActionResult> GetAll(CancellationToken token)
         {
@@ -51,6 +52,7 @@ namespace Movies.Api.Controllers
             return Ok(moviesResponse);
         }
 
+        [Authorize(AuthConstants.AdminUserPolicyName)]
         [HttpPut(ApiEndpoints.Movies.Update)]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMovieRequest request, CancellationToken token)
         {
@@ -64,6 +66,7 @@ namespace Movies.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize(AuthConstants.AdminUserPolicyName)]
         [HttpDelete(ApiEndpoints.Movies.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken token)
         {
