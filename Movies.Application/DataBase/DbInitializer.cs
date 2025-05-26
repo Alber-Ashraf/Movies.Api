@@ -33,12 +33,23 @@ namespace Movies.Application.DataBase
                 CREATE UNIQUE INDEX IF NOT EXISTS movies_slug_idx ON movies (slug);
                 
                 """);
+
             await connection.ExecuteAsync("""
                 CREATE TABLE IF NOT EXISTS genres (
                     movieId UUID references movies (Id),
                     name TEXT not null
                 );
 
+                """);
+
+            await connection.ExecuteAsync("""
+                CREATE TABLE IF NOT EXISTS ratings (
+                    userId UUID,
+                    movieId UUID references movies (Id),
+                    rating integer not null,
+                    primary key (userId, movieId)
+                );
+                
                 """);
 
         }

@@ -6,6 +6,7 @@ using Movies.Application.Models;
 using Movies.Api.Mapping;
 using Movies.Application.Services;
 using Microsoft.AspNetCore.Authorization;
+using Movies.Api.Auth;
 
 
 namespace Movies.Api.Controllers
