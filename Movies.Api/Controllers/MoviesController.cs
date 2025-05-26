@@ -5,10 +5,12 @@ using Movies.Application.Repositories.IRepositories;
 using Movies.Application.Models;
 using Movies.Api.Mapping;
 using Movies.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Movies.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     public class MoviesController : ControllerBase
     {
