@@ -44,7 +44,7 @@ namespace Movies.Application.Repositories
             transaction.Commit();
             return result > 0;
         }
-        public async Task<Movie> GetByIdAsync(Guid id, CancellationToken token = default)
+        public async Task<Movie> GetByIdAsync(Guid id, Guid? userid = default, CancellationToken token = default)
         {
             var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var movie = await connection.QueryFirstOrDefaultAsync<Movie>(new CommandDefinition("""
@@ -67,7 +67,7 @@ namespace Movies.Application.Repositories
 
             return movie;
         }
-        public async Task<Movie> GetBySlugAsync(string slug, CancellationToken token = default)
+        public async Task<Movie> GetBySlugAsync(string slug, Guid? userid = default, CancellationToken token = default)
         {
             var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var movie = await connection.QueryFirstOrDefaultAsync<Movie>(new CommandDefinition("""
@@ -90,7 +90,7 @@ namespace Movies.Application.Repositories
 
             return movie;
         }
-        public async Task<IEnumerable<Movie>> GetAllAsync(CancellationToken token = default)
+        public async Task<IEnumerable<Movie>> GetAllAsync(Guid? userid = default, CancellationToken token = default)
         {
             var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var result = await connection.QueryAsync(new CommandDefinition("""
@@ -108,7 +108,7 @@ namespace Movies.Application.Repositories
                     .ToList(x.genres?.Split(','))
             });
         }
-        public async Task<bool> UpdateAsync(Movie movie, CancellationToken token = default)
+        public async Task<bool> UpdateAsync(Movie movie, Guid? userid = default, CancellationToken token = default)
         {
             var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             using var transaction = await connection.BeginTransactionAsync();
