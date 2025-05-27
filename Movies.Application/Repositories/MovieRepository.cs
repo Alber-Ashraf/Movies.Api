@@ -115,7 +115,7 @@ namespace Movies.Application.Repositories
                 left join ratings r on m.id = r.movieId
                 left join ratings myr on m.id = myr.movieId
                     and myr.userId = @userid
-                group by id;
+                group by id, userrating;
                 """, new{ userid }, cancellationToken: token));
 
             return result.Select(x => new Movie

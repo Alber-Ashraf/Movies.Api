@@ -9,6 +9,7 @@ using Movies.Application.DataBase;
 using Movies.Application.Repositories;
 using Movies.Application.Repositories.IRepositories;
 using Movies.Application.Services;
+using Movies.Application.Services.IServices;
 using Npgsql;
 
 namespace Movies.Application
@@ -17,8 +18,9 @@ namespace Movies.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddSingleton<IMovieRepository, MovieRepository>();
             services.AddSingleton<IRatingRepository, RatingRepository>();
+            services.AddSingleton<IRatingService, RatingService>();
+            services.AddSingleton<IMovieRepository, MovieRepository>();
             services.AddScoped<IMovieService, MovieService>();
             services.AddValidatorsFromAssemblyContaining<IApplicationMarcker>();
             return services;

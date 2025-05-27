@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using Movies.Application.Models;
 using Movies.Application.Repositories.IRepositories;
+using Movies.Application.Services.IServices;
 
 namespace Movies.Application.Services
 {

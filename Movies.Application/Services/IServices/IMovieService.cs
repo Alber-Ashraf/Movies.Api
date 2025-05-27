@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Movies.Application.Models;
 using Movies.Application.Repositories.IRepositories;
 
-namespace Movies.Application.Services
+namespace Movies.Application.Services.IServices
 {
     public interface IMovieService
     {

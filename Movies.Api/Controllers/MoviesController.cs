@@ -4,9 +4,9 @@ using Movies.Contracts.Responses;
 using Movies.Application.Repositories.IRepositories;
 using Movies.Application.Models;
 using Movies.Api.Mapping;
-using Movies.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Movies.Api.Auth;
+using Movies.Application.Services.IServices;
 
 
 namespace Movies.Api.Controllers
