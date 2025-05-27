@@ -19,6 +19,7 @@ namespace Movies.Application.Services
             _ratingRepository = ratingRepository;
             this._movieRepository = _movieRepository;
         }
+
         public async Task<bool> RateMovieAsync(Guid movieId, Guid userId, int rating, CancellationToken token = default)
         {
             // Validate the rating value
@@ -42,6 +43,11 @@ namespace Movies.Application.Services
             }
             // Validate the userId if necessary, e.g., check if the user exists
             return await _ratingRepository.RateMovieAsync(movieId, userId, rating, token);
+        }
+
+        public async Task<bool> DeleteRatingAsync(Guid movieId, Guid userId, CancellationToken token = default)
+        {
+            return await _ratingRepository.DeleteRatingAsync(movieId, userId, token);
         }
     }
 }

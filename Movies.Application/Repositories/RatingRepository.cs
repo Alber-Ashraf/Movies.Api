@@ -51,5 +51,16 @@ namespace Movies.Application.Repositories
             """, new { movieId, userId }, cancellationToken: token));
         }
 
+        public async Task<bool> DeleteRatingAsync(Guid movieId, Guid userId, CancellationToken token = default)
+        {
+            using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+            var result = await connection.ExecuteAsync(new CommandDefinition("""
+            delete from ratings
+            where movieid = @movieId
+            and userid = @userId
+            """, new { userId, movieId }, cancellationToken: token));
+            return result > 0;
+        }
+
     }
 }
