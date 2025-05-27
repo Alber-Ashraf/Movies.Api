@@ -19,13 +19,20 @@ namespace Movies.Application.DataBase
         {
             using var connection = await _dbConnectionFactory.CreateConnectionAsync();
 
+            //await connection.ExecuteAsync("""
+                
+            //    Drop table ratings;
+            //    Drop table genres;
+            //    Drop table movies;
+
+            //    """);
             await connection.ExecuteAsync("""
                 
-                Create table if not exists movies (
-                    id UUID primary key,
-                    slug TEXT not null,
-                    title TEXT not null,
-                    yearofrelease integer not null
+                CREATE TABLE IF NOT EXISTS movies (
+                    id UUID PRIMARY KEY,
+                    slug TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    yearofrelease INTEGER NOT NULL
                 );
                 
                 """);
@@ -36,8 +43,8 @@ namespace Movies.Application.DataBase
 
             await connection.ExecuteAsync("""
                 CREATE TABLE IF NOT EXISTS genres (
-                    movieId UUID references movies (Id),
-                    name TEXT not null
+                    movieId UUID REFERENCES movies (id) ON DELETE CASCADE,
+                    name TEXT NOT NULL
                 );
 
                 """);
@@ -45,13 +52,12 @@ namespace Movies.Application.DataBase
             await connection.ExecuteAsync("""
                 CREATE TABLE IF NOT EXISTS ratings (
                     userId UUID,
-                    movieId UUID references movies (Id),
-                    rating integer not null,
-                    primary key (userId, movieId)
+                    movieId UUID REFERENCES movies (id) ON DELETE CASCADE,
+                    rating INTEGER NOT NULL,
+                    PRIMARY KEY (userId, movieId)
                 );
                 
                 """);
-
         }
     }
 }

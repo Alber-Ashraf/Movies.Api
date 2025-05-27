@@ -124,7 +124,7 @@ namespace Movies.Application.Repositories
                 Title = x.title,
                 YearOfRelease = x.yearofrelease,
                 Rating = (float?)x.rating,
-                UserRating = (int?)x.userRating,
+                UserRating = (int?)x.userrating,
                 Genres = Enumerable
                     .ToList(x.genres?.Split(','))
             });
