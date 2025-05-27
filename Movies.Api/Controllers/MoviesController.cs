@@ -45,7 +45,6 @@ namespace Movies.Api.Controllers
             return Ok(response);
         }
 
-        [Authorize]
         [HttpGet(ApiEndpoints.Movies.GetAll)]
         public async Task<IActionResult> GetAll(CancellationToken token)
         {

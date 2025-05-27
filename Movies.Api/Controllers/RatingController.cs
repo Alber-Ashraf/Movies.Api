@@ -6,6 +6,7 @@ using Movies.Contracts.Requests;
 
 namespace Movies.Api.Controllers
 {
+    [ApiController]
     public class RatingController : Controller
     {
         // Inject the rating service
@@ -16,8 +17,8 @@ namespace Movies.Api.Controllers
         }
         [Authorize]
         [HttpPut(ApiEndpoints.Movies.Rate)]
-        public async Task<IActionResult> RateMovie([FromRoute] Guid id, 
-            [FromBody] RateMovieRequest request, CancellationToken token) 
+        public async Task<IActionResult> RateMovie([FromRoute] Guid id,
+        [FromBody] RateMovieRequest request, CancellationToken token)
         {
             var userId = HttpContext.GetUserId();
             var result = await _ratingService.RateMovieAsync(id, userId!.Value, request.Rating, token);
