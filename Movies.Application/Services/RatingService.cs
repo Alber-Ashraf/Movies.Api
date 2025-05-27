@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
+using Movies.Application.Models;
 using Movies.Application.Repositories.IRepositories;
 using Movies.Application.Services.IServices;
 
@@ -47,7 +48,14 @@ namespace Movies.Application.Services
 
         public async Task<bool> DeleteRatingAsync(Guid movieId, Guid userId, CancellationToken token = default)
         {
+            // Validate the movieId to ensure the movie exists
             return await _ratingRepository.DeleteRatingAsync(movieId, userId, token);
+        }
+
+        public async Task<IEnumerable<MovieRating>> movieRatingsAsync(Guid userId, CancellationToken token = default)
+        {
+            // Validate the userId if necessary, e.g., check if the user exists
+            return await _ratingRepository.movieRatingsAsync(userId, token);
         }
     }
 }

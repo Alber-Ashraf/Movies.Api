@@ -18,7 +18,7 @@ namespace Movies.Api
             public const string DeleteRating = $"{Base}/{{id:guid}}/ratings";
         }
 
-        public static class Rating
+        public static class Ratings
         {
             private const string Base = $"{ApiBase}/ratings";
 
