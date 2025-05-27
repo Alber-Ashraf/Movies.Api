@@ -48,8 +48,14 @@ namespace Movies.Application.Repositories
         {
             var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var movie = await connection.QueryFirstOrDefaultAsync<Movie>(new CommandDefinition("""
-                SELECT * FROM movies WHERE id = @Id;
-                """, new { id }, cancellationToken: token));
+                SELECT m.*, round(avg(r.rating), 1) as rating, myr.rating as userRating
+                FROM movies m
+                LEFT JOIN ratings r ON m.id = r.movieId
+                LEFT JOIN ratings myr ON m.id = myr.movieId
+                    and myr.userId = @userid
+                WHERE id = @Id
+                group by id, userRating;
+                """, new { id, userid }, cancellationToken: token));
 
             if (movie is null)
             {
@@ -71,8 +77,14 @@ namespace Movies.Application.Repositories
         {
             var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var movie = await connection.QueryFirstOrDefaultAsync<Movie>(new CommandDefinition("""
-                SELECT * FROM movies WHERE slug = @slug;
-                """, new { slug }, cancellationToken: token));
+                SELECT m.*, round(avg(r.rating), 1) as rating, myr.rating as userRating
+                FROM movies m
+                LEFT JOIN ratings r ON m.id = r.movieId
+                LEFT JOIN ratings myr ON m.id = myr.movieId
+                    and myr.userId = @userid
+                WHERE slug = @Slug
+                group by id, userRating;
+                """, new { slug, userid }, cancellationToken: token));
 
             if (movie is null)
             {
@@ -94,21 +106,30 @@ namespace Movies.Application.Repositories
         {
             var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var result = await connection.QueryAsync(new CommandDefinition("""
-                select m.* , string_agg(g.name, ',') as genres
-                from movies m left join genres g on m.Id = g.movieId
+                select m.* ,
+                    string_agg(g.name, ',') as genres
+                    , round(avg(r.rating), 1) as rating
+                    , myr.rating as userRating
+                from movies m
+                left join genres g on m.Id = g.movieId
+                left join ratings r on m.id = r.movieId
+                left join ratings myr on m.id = myr.movieId
+                    and myr.userId = @userid
                 group by id;
-                """, cancellationToken: token));
+                """, new{ userid }, cancellationToken: token));
 
             return result.Select(x => new Movie
             {
                 Id = x.id,
                 Title = x.title,
                 YearOfRelease = x.yearofrelease,
+                Rating = (float?)x.rating,
+                UserRating = (int?)x.userRating,
                 Genres = Enumerable
                     .ToList(x.genres?.Split(','))
             });
         }
-        public async Task<bool> UpdateAsync(Movie movie, Guid? userid = default, CancellationToken token = default)
+        public async Task<bool> UpdateAsync(Movie movie, CancellationToken token = default)
         {
             var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             using var transaction = await connection.BeginTransactionAsync();

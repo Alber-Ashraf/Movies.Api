@@ -18,6 +18,7 @@ namespace Movies.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddSingleton<IMovieRepository, MovieRepository>();
+            services.AddSingleton<IRatingRepository, RatingRepository>();
             services.AddScoped<IMovieService, MovieService>();
             services.AddValidatorsFromAssemblyContaining<IApplicationMarcker>();
             return services;

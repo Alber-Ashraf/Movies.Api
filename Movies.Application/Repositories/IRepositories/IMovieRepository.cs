@@ -14,7 +14,7 @@ namespace Movies.Application.Repositories.IRepositories
         public Task<Movie> GetBySlugAsync(string slug, Guid? userid = default, CancellationToken token = default);
         public Task<IEnumerable<Movie>> GetAllAsync(Guid? userid = default, CancellationToken token = default);
         public Task<bool> DeleteAsync(Guid id, CancellationToken token = default);
-        public Task<bool> UpdateAsync(Movie movie, Guid? userid = default, CancellationToken token = default);
+        public Task<bool> UpdateAsync(Movie movie, CancellationToken token = default);
         public Task<bool> ExistsByIdAsync(Guid id, CancellationToken token = default);
 
     }
