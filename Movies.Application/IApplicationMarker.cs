@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Movies.Application
 {
-    public interface IApplicationMarcker{}
+    public interface IApplicationMarker{}
 }

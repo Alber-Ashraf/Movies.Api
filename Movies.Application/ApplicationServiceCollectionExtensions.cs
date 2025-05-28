@@ -21,8 +21,8 @@ namespace Movies.Application
             services.AddSingleton<IRatingRepository, RatingRepository>();
             services.AddSingleton<IRatingService, RatingService>();
             services.AddSingleton<IMovieRepository, MovieRepository>();
-            services.AddScoped<IMovieService, MovieService>();
-            services.AddValidatorsFromAssemblyContaining<IApplicationMarcker>();
+            services.AddSingleton<IMovieService, MovieService>();
+            services.AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton);
             return services;
         }
         public static IServiceCollection AddDatabase(this IServiceCollection services, string connectionString)
