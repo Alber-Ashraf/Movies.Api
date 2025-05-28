@@ -11,10 +11,19 @@ namespace Movies.Application.Validators
 {
     public class GetAllMoviesOptionsValidator : AbstractValidator<GetAllMoviesOptions>
     {
+        public string[] AcceptedSortFields = new[]
+        {
+            "title","yearofrelease"
+        };
+
         public GetAllMoviesOptionsValidator()
         {
             RuleFor(x => x.YearOfRelease)
                 .LessThanOrEqualTo(DateTime.UtcNow.Year);
+
+            RuleFor(x => x.SortField)
+                .Must(x => x is null || AcceptedSortFields.Contains(x, StringComparer.Ordinal))
+                .WithMessage($"Sort field must be one of the following: {string.Join(", ", AcceptedSortFields)}");
         }
     }
 }

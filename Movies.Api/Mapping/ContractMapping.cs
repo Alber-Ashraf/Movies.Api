@@ -63,6 +63,10 @@ namespace Movies.Api.Mapping
             {
                 Title = request.Title,
                 YearOfRelease = request.Year,
+                SortField = request.SortBy?.Trim('+', '-'),
+                SortOrder = request.SortBy is null ? SortOrder.Unsorted
+                    : request.SortBy.StartsWith('-')? SortOrder.Descending
+                        : SortOrder.Ascending
             };
         }
 
