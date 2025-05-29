@@ -127,14 +127,18 @@ namespace Movies.Application.Repositories
                     and myr.userId = @userid
                 where (@title is null or m.title like ('%' || @title || '%'))
                 and  (@yearofrelease is null or m.yearofrelease = @yearofrelease)
-                group by id, userrating{orderClause};
+                group by id, userrating{orderClause}
+                limit @pageSize
+                offset @pageOffset;
                 """, new
                         {
                             userid = options.UserId,
                             title = options.Title,
-                            yearofrelease = options.YearOfRelease
+                            yearofrelease = options.YearOfRelease,
+                            pageSize = options.PageSize,
+                            pageOffset = (options.Page - 1) * options.PageSize
 
-                        }, cancellationToken: token));
+            }, cancellationToken: token));
 
             return result.Select(x => new Movie
             {
@@ -194,6 +198,21 @@ namespace Movies.Application.Repositories
             return await connection.ExecuteScalarAsync<bool>(new CommandDefinition("""
                 SELECT EXISTS(SELECT 1 FROM movies WHERE id = @Id);
                 """, new { id }, cancellationToken: token));
+        }
+
+        public async Task<int> GetCountAsync(string? title, int? yaerOfRealease, CancellationToken token = default)
+        {
+            var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+            return await connection.ExecuteScalarAsync<int>(new CommandDefinition("""
+                SELECT COUNT(id)
+                FROM movies
+                WHERE (@title IS NULL OR title LIKE ('%' || @title || '%'))
+                AND (@yaerOfRealease IS NULL OR yearofrelease = @yaerOfRealease);
+                """, new 
+            { 
+                title,
+                yaerOfRealease
+            }, cancellationToken: token));
         }
     }
 }
