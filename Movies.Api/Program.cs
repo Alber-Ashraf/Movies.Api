@@ -60,6 +60,8 @@ namespace Movies.Api
                                                    c.Value == "true")));
             });
 
+            builder.Services.AddScoped<ApiKeyAuthFiltter>();
+
             builder.Services.AddApiVersioning(
                 options =>
                 {
