@@ -1,6 +1,7 @@
 
 using System.Text;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.IdentityModel.Tokens;
@@ -54,6 +55,17 @@ namespace Movies.Api
                         context.User.HasClaim(c => c.Type == AuthConstants.AdminUserClaimName &&
                                                    c.Value == "true")));
             });
+
+            builder.Services.AddApiVersioning(
+                options =>
+                {
+                    options.DefaultApiVersion = new ApiVersion(1.0);
+                    options.AssumeDefaultVersionWhenUnspecified = true;
+                    options.ReportApiVersions = true;
+                    options.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
+                }
+                ).AddMvc();
+            ;
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
