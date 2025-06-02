@@ -80,7 +80,16 @@ namespace Movies.Api
             builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             builder.Services.AddSwaggerGen(x => x.OperationFilter<SwaggerDefaultValues>());
 
-            builder.Services.AddResponseCaching();
+            //builder.Services.AddResponseCaching();
+            builder.Services.AddOutputCache(x =>
+            {
+                x.AddBasePolicy(c => c.Cache());
+                x.AddPolicy("MovieCache", c =>
+                    c.Cache()
+                    .Expire(TimeSpan.FromMinutes(1))
+                    .SetVaryByQuery(new[] { "title", "year", "sortBy", "page", "pageSize" })
+                    .Tag("movies"));
+            });
 
             builder.Services.AddApplication();
             builder.Services.AddDatabase(config["Database:ConnectionString"]!);
@@ -109,7 +118,8 @@ namespace Movies.Api
             app.UseAuthorization();
 
             //app.UseCors();
-            app.UseResponseCaching();
+            //app.UseResponseCaching();
+            app.UseOutputCache();
 
             app.UseMiddleware<ValidationMappingMiddleware>();
 
