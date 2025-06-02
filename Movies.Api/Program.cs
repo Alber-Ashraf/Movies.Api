@@ -49,8 +49,11 @@ namespace Movies.Api
 
             builder.Services.AddAuthorization(x =>
             {
+                // x.AddPolicy(AuthConstants.AdminUserPolicyName, 
+                //     p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
+
                 x.AddPolicy(AuthConstants.AdminUserPolicyName,
-                        p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
+                    p => p.AddRequirements(new AdminAuthRequirement(config["ApiKey"]!)));
 
                 x.AddPolicy(AuthConstants.TrustedMenmberPolicyName, 
                     p => p.RequireAssertion(context =>
