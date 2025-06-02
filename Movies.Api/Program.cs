@@ -4,13 +4,16 @@ using System.Threading.Tasks;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Auth;
 using Movies.Api.Mapping;
+using Movies.Api.Swagger;
 using Movies.Application;
 using Movies.Application.DataBase;
 using Movies.Application.Repositories;
 using Movies.Application.Repositories.IRepositories;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Movies.Api
 {
@@ -64,13 +67,14 @@ namespace Movies.Api
                     options.ReportApiVersions = true;
                     options.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
                 }
-                ).AddMvc();
+                ).AddMvc().AddApiExplorer();
             ;
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+            builder.Services.AddSwaggerGen(x => x.OperationFilter<SwaggerDefaultValues>());
 
             builder.Services.AddApplication();
             builder.Services.AddDatabase(config["Database:ConnectionString"]!);
@@ -81,7 +85,14 @@ namespace Movies.Api
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(x =>
+                {
+                    foreach (var description in app.DescribeApiVersions())
+                    {
+                        x.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                            description.GroupName);
+                    }
+                });
             }
 
             app.UseHttpsRedirection();
