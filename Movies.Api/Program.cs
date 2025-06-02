@@ -80,6 +80,8 @@ namespace Movies.Api
             builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             builder.Services.AddSwaggerGen(x => x.OperationFilter<SwaggerDefaultValues>());
 
+            builder.Services.AddResponseCaching();
+
             builder.Services.AddApplication();
             builder.Services.AddDatabase(config["Database:ConnectionString"]!);
 
@@ -105,6 +107,9 @@ namespace Movies.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //app.UseCors();
+            app.UseResponseCaching();
 
             app.UseMiddleware<ValidationMappingMiddleware>();
 
