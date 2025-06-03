@@ -6,7 +6,7 @@
         {
             app.MapGetMovie();
             app.MapCreateMovie();
-            //app.MapGetAllMovie();
+            app.MapGetMovies();
             //app.MapDeleteMovie();
             //app.MapUpdateMovie();
             return app;
