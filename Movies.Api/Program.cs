@@ -103,6 +103,8 @@ namespace Movies.Api
 
             var app = builder.Build();
 
+            app.CreateApiVersionSet();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

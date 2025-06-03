@@ -27,8 +27,9 @@ namespace Movies.Api.Endpoints.Movies
                 return TypedResults.Ok(moviesResponse);
             })
                 .WithName(Name)
-                .Produces<MovieResponse>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces<MoviesResponse>(StatusCodes.Status200OK)
+                .WithApiVersionSet(ApiVersioning.VersionSet)
+                .HasApiVersion(1.0);
             return app;
         }
     }
