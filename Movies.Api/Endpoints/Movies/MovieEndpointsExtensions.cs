@@ -8,7 +8,7 @@
             app.MapCreateMovie();
             app.MapGetMovies();
             app.MapUpdateMovie();
-            //app.MapDeleteMovie();
+            app.MapDeleteMovie();
             return app;
         }
     }
