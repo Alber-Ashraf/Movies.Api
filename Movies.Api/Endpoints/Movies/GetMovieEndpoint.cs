@@ -7,6 +7,7 @@ namespace Movies.Api.Endpoints.Movies
 {
     public static class GetMovieEndpoint
     {
+        public static string Name = "GetMovie";
         public static IEndpointRouteBuilder MapGetMovie(this IEndpointRouteBuilder app)
         {
             app.MapGet(ApiEndpoints.Movies.Get, async (
@@ -24,7 +25,8 @@ namespace Movies.Api.Endpoints.Movies
                 }
                 var response = movie.MapToResponse();
                 return TypedResults.Ok(response);
-            });
+            })
+                .WithName(Name);
             return app;
         }
     }

@@ -36,7 +36,9 @@ namespace Movies.Api.Controllers
             // Evict the cache for movies tag
             await _outputCacheStore.EvictByTagAsync("movies", token);
             await _movieService.CreateAsync(movie, token);
-            return CreatedAtAction(nameof(Get), new { idOrSlug = movie.Id }, movie);
+            // Map the created movie to response
+            var response = movie.MapToResponse();
+            return CreatedAtAction(nameof(Get), new { idOrSlug = movie.Id }, response);
         }
 
         [HttpGet(ApiEndpoints.Movies.Get)]
