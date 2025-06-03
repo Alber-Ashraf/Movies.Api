@@ -27,6 +27,22 @@ var moviesApi = provider.GetRequiredService<IMoviesApi>();
 var movie = await moviesApi.GetMovieAsync("father-of-the-bride-part-ii2-1995");
 //Console.WriteLine(JsonSerializer.Serialize(movie));
 
+var newMovie = await moviesApi.CreateMovieAsync(new CreateMovieRequest
+{
+    Title = "Spiderman 2",
+    YearOfRelease = 2002,
+    Genres = new[] { "Action" }
+});
+
+await moviesApi.UpdateMovieAsync(newMovie.Id, new UpdateMovieRequest
+{
+    Title = "Spiderman 2",
+    YearOfRelease = 2002,
+    Genres = new[] { "Action", "Adventure" }
+});
+
+await moviesApi.DeleteMovieAsync(newMovie.Id);
+
 var request = new GetAllMoviesRequest
 {
     Title = null,
