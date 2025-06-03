@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Auth;
+using Movies.Api.Endpoints;
 using Movies.Api.Health;
 using Movies.Api.Mapping;
 using Movies.Api.Swagger;
@@ -76,8 +77,7 @@ namespace Movies.Api
                 ).AddMvc().AddApiExplorer();
             ;
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            //builder.Services.AddControllers();
 
             builder.Services.AddHealthChecks()
                 .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
@@ -128,7 +128,8 @@ namespace Movies.Api
 
             app.UseMiddleware<ValidationMappingMiddleware>();
 
-            app.MapControllers();
+            //app.MapControllers();
+            app.MapApiEndpoints();
 
             // Initialize the database
             var dbInitializer = app.Services.GetRequiredService<DbInitializer>();
