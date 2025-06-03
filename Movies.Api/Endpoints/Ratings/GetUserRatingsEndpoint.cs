@@ -18,7 +18,8 @@ namespace Movies.Api.Endpoints.Ratings
                         var ratings = await ratingService.movieRatingsAsync(userId!.Value, token);
                         return TypedResults.Ok(ratings);
                     })
-                .WithName(Name);
+                .WithName(Name)
+                .RequireAuthorization();
             return app;
         }
     }

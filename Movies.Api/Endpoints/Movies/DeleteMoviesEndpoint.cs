@@ -25,7 +25,8 @@ namespace Movies.Api.Endpoints.Movies
                 await outputCacheStore.EvictByTagAsync("movies", token);
                 return TypedResults.Ok();
             })
-                .WithName(Name);
+                .WithName(Name)
+                .RequireAuthorization(AuthConstants.TrustedMenmberPolicyName);
             return app;
         }
     }

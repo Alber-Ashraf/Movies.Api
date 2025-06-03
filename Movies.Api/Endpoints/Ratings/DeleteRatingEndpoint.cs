@@ -21,7 +21,8 @@ namespace Movies.Api.Endpoints.Ratings
                         var result = await ratingService.DeleteRatingAsync(id, userId!.Value, token);
                         return result ? Results.Ok() : Results.NotFound();
                     })
-                .WithName(Name);
+                .WithName(Name)
+                .RequireAuthorization();
             return app;
         }
     }

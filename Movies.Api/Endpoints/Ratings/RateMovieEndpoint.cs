@@ -19,7 +19,8 @@ namespace Movies.Api.Endpoints.Ratings
                         var result = await ratingService.RateMovieAsync(id, userId!.Value, request.Rating, token);
                         return result ? Results.Ok() : Results.NotFound();
                     })
-                .WithName(Name);
+                .WithName(Name)
+                .RequireAuthorization();
             return app;
         }
     }
