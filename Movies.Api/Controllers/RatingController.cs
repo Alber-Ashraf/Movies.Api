@@ -9,6 +9,7 @@ using Movies.Contracts.Responses;
 
 namespace Movies.Api.Controllers
 {
+    /*
     [ApiController]
     [ApiVersion(1.0)]
     public class RatingController : Controller
@@ -52,4 +53,5 @@ namespace Movies.Api.Controllers
             return Ok(ratingsResponse);
         }
     }
+    */
 }

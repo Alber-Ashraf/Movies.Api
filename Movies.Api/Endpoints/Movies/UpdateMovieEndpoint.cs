@@ -4,6 +4,7 @@ using Movies.Api.Mapping;
 using Movies.Application.Services;
 using Movies.Application.Services.IServices;
 using Movies.Contracts.Requests;
+using Movies.Contracts.Responses;
 
 namespace Movies.Api.Endpoints.Movies
 {
@@ -29,6 +30,9 @@ namespace Movies.Api.Endpoints.Movies
                 return TypedResults.Ok(response);
             })
                 .WithName(Name)
+                .Produces<MovieResponse>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
+                .Produces<ValidationFailureResponse>(StatusCodes.Status400BadRequest)
                 .RequireAuthorization(AuthConstants.TrustedMenmberPolicyName);
 
             return app;

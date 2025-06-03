@@ -20,6 +20,8 @@ namespace Movies.Api.Endpoints.Ratings
                         return result ? Results.Ok() : Results.NotFound();
                     })
                 .WithName(Name)
+                .Produces(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
                 .RequireAuthorization();
             return app;
         }

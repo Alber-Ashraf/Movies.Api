@@ -74,7 +74,9 @@ namespace Movies.Api
                     options.ReportApiVersions = true;
                     options.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
                 }
-                ).AddMvc().AddApiExplorer();
+                ).AddApiExplorer();
+
+            builder.Services.AddEndpointsApiExplorer();
             ;
 
             //builder.Services.AddControllers();

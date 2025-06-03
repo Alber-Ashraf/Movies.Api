@@ -3,6 +3,7 @@ using Movies.Api.Mapping;
 using Movies.Application.Services;
 using Movies.Application.Services.IServices;
 using Movies.Contracts.Requests;
+using Movies.Contracts.Responses;
 
 namespace Movies.Api.Endpoints.Movies
 {
@@ -25,7 +26,9 @@ namespace Movies.Api.Endpoints.Movies
                 var moviesResponse = movies.MapToResponse(request.Page.GetValueOrDefault(pagedRequest.DefaultPage), request.PageSize.GetValueOrDefault(pagedRequest.DefaultPageSize), movieCount);
                 return TypedResults.Ok(moviesResponse);
             })
-                .WithName(Name);
+                .WithName(Name)
+                .Produces<MovieResponse>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound);
             return app;
         }
     }

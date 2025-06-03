@@ -2,6 +2,7 @@
 using Movies.Api.Mapping;
 using Movies.Application.Services;
 using Movies.Application.Services.IServices;
+using Movies.Contracts.Responses;
 
 namespace Movies.Api.Endpoints.Movies
 {
@@ -26,7 +27,8 @@ namespace Movies.Api.Endpoints.Movies
                 var response = movie.MapToResponse();
                 return TypedResults.Ok(response);
             })
-                .WithName(Name);
+                .WithName(Name)
+                .Produces<MoviesResponse>(StatusCodes.Status200OK);
             return app;
         }
     }

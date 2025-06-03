@@ -19,6 +19,7 @@ namespace Movies.Api.Endpoints.Ratings
                         return TypedResults.Ok(ratings);
                     })
                 .WithName(Name)
+                .Produces<MovieRatingResponse>(StatusCodes.Status200OK)
                 .RequireAuthorization();
             return app;
         }

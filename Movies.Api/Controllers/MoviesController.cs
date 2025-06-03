@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.OutputCaching;
 
 
 namespace Movies.Api.Controllers
-{
+{ 
+    /*
     [ApiController]
     [ApiVersion(1.0)]
     public class MoviesController : ControllerBase
@@ -114,4 +115,5 @@ namespace Movies.Api.Controllers
             return Ok();
         }
     }
+    */
 }
