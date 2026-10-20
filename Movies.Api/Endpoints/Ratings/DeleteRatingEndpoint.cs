@@ -1,10 +1,6 @@
-﻿using System.Xml.Linq;
-using Microsoft.AspNetCore.OutputCaching;
+﻿using Microsoft.AspNetCore.OutputCaching;
 using Movies.Api.Auth;
-using Movies.Api.Mapping;
-using Movies.Application.Services;
 using Movies.Application.Services.IServices;
-using Movies.Contracts.Requests;
 
 namespace Movies.Api.Endpoints.Ratings
 {
@@ -15,14 +11,25 @@ namespace Movies.Api.Endpoints.Ratings
         {
             app.MapDelete(ApiEndpoints.Movies.DeleteRating,
                     async (Guid id, HttpContext context, IRatingService ratingService,
+                        IOutputCacheStore outputCacheStore,
                         CancellationToken token) =>
                     {
                         var userId = context.GetUserId();
-                        var result = await ratingService.DeleteRatingAsync(id, userId!.Value, token);
-                        return result ? Results.Ok() : Results.NotFound();
+                        if (userId is null)
+                        {
+                            return Results.Unauthorized();
+                        }
+                        var result = await ratingService.DeleteRatingAsync(id, userId.Value, token);
+                        if (!result)
+                        {
+                            return Results.NotFound();
+                        }
+                        await outputCacheStore.EvictByTagAsync("movies", token);
+                        return Results.Ok();
                     })
                 .WithName(Name)
                 .Produces(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status404NotFound)
                 .RequireAuthorization();
             return app;

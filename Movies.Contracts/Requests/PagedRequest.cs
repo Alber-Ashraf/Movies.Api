@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Movies.Contracts.Requests
+﻿namespace Movies.Contracts.Requests
 {
-    public class pagedRequest
+    public class PagedRequest
     {
         public const int DefaultPage = 1;
         public const int DefaultPageSize = 10;

@@ -1,6 +1,7 @@
-﻿using Movies.Api.Endpoints.Movies;
+﻿using Movies.Api.Endpoints.Genres;
+using Movies.Api.Endpoints.Identity;
+using Movies.Api.Endpoints.Movies;
 using Movies.Api.Endpoints.Ratings;
-
 
 namespace Movies.Api.Endpoints
 {
@@ -10,6 +11,8 @@ namespace Movies.Api.Endpoints
         {
             app.MapMovieEndpoints();
             app.MapRatingEndpoints();
+            app.MapGenreEndpoints();
+            app.MapIdentityEndpoints();
             return app;
         }
     }

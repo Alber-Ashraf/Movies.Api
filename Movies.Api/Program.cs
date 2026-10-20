@@ -1,9 +1,7 @@
 
 using System.Text;
-using System.Threading.Tasks;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Auth;
@@ -13,8 +11,6 @@ using Movies.Api.Mapping;
 using Movies.Api.Swagger;
 using Movies.Application;
 using Movies.Application.DataBase;
-using Movies.Application.Repositories;
-using Movies.Application.Repositories.IRepositories;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Movies.Api
@@ -24,8 +20,6 @@ namespace Movies.Api
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
             var config = builder.Configuration;
 
             builder.Services.AddAuthentication(x =>
@@ -50,13 +44,10 @@ namespace Movies.Api
 
             builder.Services.AddAuthorization(x =>
             {
-                // x.AddPolicy(AuthConstants.AdminUserPolicyName, 
-                //     p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
-
                 x.AddPolicy(AuthConstants.AdminUserPolicyName,
-                    p => p.AddRequirements(new AdminAuthRequirement(config["ApiKey"]!)));
+                    p => p.AddRequirements(new AdminAuthRequirement(config["ApiKey"] ?? "")));
 
-                x.AddPolicy(AuthConstants.TrustedMenmberPolicyName, 
+                x.AddPolicy(AuthConstants.TrustedMemberPolicyName,
                     p => p.RequireAssertion(context =>
                         context.User.HasClaim(c => c.Type == AuthConstants.TrustedMemberClaimName &&
                                                    c.Value == "true") ||
@@ -64,22 +55,30 @@ namespace Movies.Api
                                                    c.Value == "true")));
             });
 
-            builder.Services.AddScoped<ApiKeyAuthFiltter>();
-
-            builder.Services.AddApiVersioning(
-                options =>
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AngularApp", policy =>
                 {
-                    options.DefaultApiVersion = new ApiVersion(1.0);
-                    options.AssumeDefaultVersionWhenUnspecified = true;
-                    options.ReportApiVersions = true;
-                    options.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
-                }
-                ).AddApiExplorer();
+                    var allowedOrigins = config.GetSection("Cors:AllowedOrigins").Get<string[]>()
+                        ?? new[] { "http://localhost:4200" };
+                    policy.WithOrigins(allowedOrigins)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
+
+            builder.Services.AddProblemDetails();
+
+            builder.Services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1.0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
+            }).AddApiExplorer();
 
             builder.Services.AddEndpointsApiExplorer();
-            ;
-
-            //builder.Services.AddControllers();
 
             builder.Services.AddHealthChecks()
                 .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
@@ -87,14 +86,14 @@ namespace Movies.Api
             builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             builder.Services.AddSwaggerGen(x => x.OperationFilter<SwaggerDefaultValues>());
 
-            //builder.Services.AddResponseCaching();
             builder.Services.AddOutputCache(x =>
             {
                 x.AddBasePolicy(c => c.Cache());
                 x.AddPolicy("MovieCache", c =>
                     c.Cache()
                     .Expire(TimeSpan.FromMinutes(1))
-                    .SetVaryByQuery(new[] { "title", "year", "sortBy", "page", "pageSize" })
+                    .SetVaryByQuery(new[] { "title", "year", "genre", "sortBy", "page", "pageSize" })
+                    .SetVaryByHeader("Authorization")
                     .Tag("movies"));
             });
 
@@ -105,7 +104,6 @@ namespace Movies.Api
 
             app.CreateApiVersionSet();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -119,25 +117,32 @@ namespace Movies.Api
                 });
             }
 
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+                context.Response.Headers.Append("X-Frame-Options", "DENY");
+                context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+                context.Response.Headers.Append("X-XSS-Protection", "0");
+                await next();
+            });
+
             app.MapHealthChecks("_health");
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AngularApp");
+
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.UseCors();
-            //app.UseResponseCaching();
             app.UseOutputCache();
 
             app.UseMiddleware<ValidationMappingMiddleware>();
 
-            //app.MapControllers();
             app.MapApiEndpoints();
 
-            // Initialize the database
             var dbInitializer = app.Services.GetRequiredService<DbInitializer>();
-            await dbInitializer.InitializeAsync();  
+            await dbInitializer.InitializeAsync();
 
             app.Run();
         }

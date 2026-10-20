@@ -33,7 +33,8 @@ namespace Movies.Api.Endpoints.Movies
                 .Produces<MovieResponse>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
                 .Produces<ValidationFailureResponse>(StatusCodes.Status400BadRequest)
-                .RequireAuthorization(AuthConstants.TrustedMenmberPolicyName);
+                .Produces(StatusCodes.Status409Conflict)
+                .RequireAuthorization(AuthConstants.TrustedMemberPolicyName);
 
             return app;
         }

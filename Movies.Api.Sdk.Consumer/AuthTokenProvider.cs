@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Movies.Api.Sdk.Consumer
 {
@@ -13,11 +8,13 @@ namespace Movies.Api.Sdk.Consumer
         private readonly HttpClient _httpClient;
 
         private string _cachedToken = string.Empty;
-        private static readonly SemaphoreSlim Lock = new(1, 1); 
+        private static readonly SemaphoreSlim Lock = new(1, 1);
+
         public AuthTokenProvider(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
+
         public async Task<string> GetTokenAsync()
         {
             if (!string.IsNullOrEmpty(_cachedToken))
@@ -30,27 +27,34 @@ namespace Movies.Api.Sdk.Consumer
                     return _cachedToken;
                 }
             }
+
             await Lock.WaitAsync();
-            var response = await _httpClient.PostAsJsonAsync("https://localhost:7288/token", new
+            try
             {
-                userid = "d8566de3-b1a6-4a9b-b842-8e3887a82e41",
-                email = "nick@nickchapsas.com",
-                customClaims = new Dictionary<string, object>
-            {
-                { "admin", true },
-                { "trusted_member", true }
+                var response = await _httpClient.PostAsJsonAsync("https://localhost:7288/token", new
+                {
+                    userid = "d8566de3-b1a6-4a9b-b842-8e3887a82e41",
+                    email = "nick@nickchapsas.com",
+                    customClaims = new Dictionary<string, object>
+                    {
+                        { "admin", true },
+                        { "trusted_member", true }
+                    }
+                });
+                var newToken = await response.Content.ReadAsStringAsync();
+                _cachedToken = newToken;
+                return newToken;
             }
-            });
-            var newToken = await response.Content.ReadAsStringAsync();
-            _cachedToken = newToken;
-            Lock.Release();
-            return newToken;
+            finally
+            {
+                Lock.Release();
+            }
         }
+
         private static DateTime UnixTimeStampToDateTime(int unixTimeStamp)
         {
             var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dateTime;
+            return dateTime.AddSeconds(unixTimeStamp);
         }
     }
 }

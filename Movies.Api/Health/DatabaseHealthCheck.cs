@@ -18,13 +18,13 @@ namespace Movies.Api.Health
                 {
                     try
                     {
-                        _ = await _dbConnectionFactory.CreateConnectionAsync(cancellationToken);
+                        await using var connection = await _dbConnectionFactory.CreateConnectionAsync(cancellationToken);
                         return HealthCheckResult.Healthy();
                     }
                     catch (Exception e)
                     {
                         const string errorMessage = "Database is unhealthy";
-                        _logger.LogError(errorMessage, e);
+                        _logger.LogError(e, errorMessage);
                         return HealthCheckResult.Unhealthy(errorMessage, e);
                     }
                 }

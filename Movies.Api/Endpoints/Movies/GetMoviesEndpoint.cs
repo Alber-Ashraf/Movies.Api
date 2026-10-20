@@ -22,8 +22,8 @@ namespace Movies.Api.Endpoints.Movies
 
                 var movies = await movieService.GetAllAsync(options, token);
 
-                var movieCount = await movieService.GetCountAsync(options.Title, options.YearOfRelease, token);
-                var moviesResponse = movies.MapToResponse(request.Page.GetValueOrDefault(pagedRequest.DefaultPage), request.PageSize.GetValueOrDefault(pagedRequest.DefaultPageSize), movieCount);
+                var movieCount = await movieService.GetCountAsync(options.Title, options.YearOfRelease, options.Genre, token);
+                var moviesResponse = movies.MapToResponse(request.Page.GetValueOrDefault(PagedRequest.DefaultPage), request.PageSize.GetValueOrDefault(PagedRequest.DefaultPageSize), movieCount);
                 return TypedResults.Ok(moviesResponse);
             })
                 .WithName(Name)

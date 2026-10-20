@@ -24,5 +24,20 @@ namespace Movies.Api
 
             public const string GetUserRating = $"{Base}/me";
         }
+
+        public static class Genres
+        {
+            private const string Base = $"{ApiBase}/genres";
+
+            public const string GetAll = Base;
+        }
+
+        public static class Identity
+        {
+            private const string Base = $"{ApiBase}/identity";
+
+            public const string Token = $"{Base}/token";
+            public const string TokenDirect = "token";
+        }
     }
 }

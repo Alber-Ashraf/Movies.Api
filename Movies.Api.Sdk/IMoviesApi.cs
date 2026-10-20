@@ -27,13 +27,16 @@ namespace Movies.Api.Sdk
         [Delete(ApiEndpoints.Movies.Delete)]
         Task DeleteMovieAsync(Guid id);
 
-        [Post(ApiEndpoints.Movies.Rate)]
+        [Put(ApiEndpoints.Movies.Rate)]
         Task RateMovieAsync(Guid id, RateMovieRequest request);
 
         [Delete(ApiEndpoints.Movies.DeleteRating)]
         Task DeleteRatingAsync(Guid id);
 
         [Get(ApiEndpoints.Ratings.GetUserRating)]
-        Task <IEnumerable<MovieRatingResponse>> GetUserRatingAsync(Guid id);
+        Task<IEnumerable<MovieRatingResponse>> GetUserRatingsAsync();
+
+        [Get(ApiEndpoints.Genres.GetAll)]
+        Task<IEnumerable<string>> GetGenresAsync();
     }
 }

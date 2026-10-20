@@ -28,7 +28,7 @@ namespace Movies.Api.Endpoints.Movies
                 .WithName(Name)
                 .Produces(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
-                .RequireAuthorization(AuthConstants.TrustedMenmberPolicyName);
+                .RequireAuthorization(AuthConstants.TrustedMemberPolicyName);
             return app;
         }
     }

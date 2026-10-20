@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Movies.Application.Models;
+﻿using Movies.Application.Models;
 
 namespace Movies.Application.Repositories.IRepositories
 {
@@ -13,6 +8,6 @@ namespace Movies.Application.Repositories.IRepositories
         Task<float?> GetRatingAsync(Guid movieId, CancellationToken token = default);
         Task<(float? Rating, int? UserRating)> GetRatingAsync(Guid movieId, Guid userId, CancellationToken token = default);
         Task<bool> DeleteRatingAsync(Guid movieId, Guid userId, CancellationToken token = default);
-        Task<IEnumerable<MovieRating>> movieRatingsAsync(Guid userId, CancellationToken token = default);
+        Task<IEnumerable<MovieRating>> GetRatingsForUserAsync(Guid userId, CancellationToken token = default);
     }
 }

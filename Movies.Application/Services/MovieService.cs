@@ -37,12 +37,12 @@ namespace Movies.Application.Services
             return await _movieRepository.GetAllAsync(options, token);
         }
 
-        public Task<Movie> GetByIdAsync(Guid id, Guid? userid = default, CancellationToken token = default)
+        public Task<Movie?> GetByIdAsync(Guid id, Guid? userid = default, CancellationToken token = default)
         {
             return _movieRepository.GetByIdAsync(id, userid, token);
         }
 
-        public Task<Movie> GetBySlugAsync(string slug, Guid? userid = default, CancellationToken token = default)
+        public Task<Movie?> GetBySlugAsync(string slug, Guid? userid = default, CancellationToken token = default)
         {
             return _movieRepository.GetBySlugAsync(slug, userid, token);
         }
@@ -77,9 +77,14 @@ namespace Movies.Application.Services
             return _movieRepository.DeleteAsync(id, token);
         }
 
-        public async Task<int> GetCountAsync(string? title, int? yaerOfRealease, CancellationToken token = default)
+        public async Task<int> GetCountAsync(string? title, int? yearOfRelease, string? genre = default, CancellationToken token = default)
         {
-           return await _movieRepository.GetCountAsync(title, yaerOfRealease, token);
+           return await _movieRepository.GetCountAsync(title, yearOfRelease, genre, token);
+        }
+
+        public Task<IEnumerable<string>> GetAllGenresAsync(CancellationToken token = default)
+        {
+            return _movieRepository.GetAllGenresAsync(token);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace Movies.Api.Endpoints.Movies
                 .WithName(Name)
                 .Produces<MovieResponse>(StatusCodes.Status201Created)
                 .Produces<ValidationFailureResponse>(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status409Conflict)
                 .RequireAuthorization(AuthConstants.AdminUserPolicyName);
             return app;
         }

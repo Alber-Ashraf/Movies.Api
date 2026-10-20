@@ -28,8 +28,8 @@ namespace Movies.Application.Validators
                 .WithMessage("At least one genre is required.");
 
             RuleFor(x => x.YearOfRelease)
-                .LessThanOrEqualTo(DateTime.Now.Year)
-                .WithMessage($"Year of release must not be int the Future.");
+                .LessThanOrEqualTo(DateTime.UtcNow.Year)
+                .WithMessage("Year of release must not be in the future.");
 
             RuleFor(x => x.Slug).MustAsync(ValidateSlug);
 

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Movies.Api.Auth
 {
@@ -13,7 +14,7 @@ namespace Movies.Api.Auth
         }
         public Task HandleAsync(AuthorizationHandlerContext context)
         {
-            if(context.User.HasClaim(AuthConstants.AdminUserClaimName, "true"))
+            if (context.User.HasClaim(AuthConstants.AdminUserClaimName, "true"))
             {
                 context.Succeed(this);
                 return Task.CompletedTask;
@@ -25,21 +26,34 @@ namespace Movies.Api.Auth
                 return Task.CompletedTask;
             }
 
-            if (!httpContext.Request.Headers.TryGetValue(AuthConstants.ApiKeyHeaderName, out
-                var extractedApiKey))
+            if (!httpContext.Request.Headers.TryGetValue(AuthConstants.ApiKeyHeaderName, out var extractedApiKey))
             {
                 context.Fail();
                 return Task.CompletedTask;
             }
 
-            if (_apiKey != extractedApiKey)
+            var apiKeyBytes = Encoding.UTF8.GetBytes(_apiKey);
+            var extractedBytes = Encoding.UTF8.GetBytes(extractedApiKey.ToString());
+
+            if (apiKeyBytes.Length != extractedBytes.Length ||
+                !CryptographicOperations.FixedTimeEquals(apiKeyBytes, extractedBytes))
             {
                 context.Fail();
                 return Task.CompletedTask;
             }
 
-            var identity = (ClaimsIdentity)httpContext.User.Identity!;
-            identity.AddClaim(new Claim("userid", Guid.Parse("74e20de1-8dd0-4bc2-a9f5-8aa3203ad209").ToString()));
+            var identity = httpContext.User.Identities.FirstOrDefault();
+            if (identity is null)
+            {
+                identity = new ClaimsIdentity("ApiKey");
+                httpContext.User.AddIdentity(identity);
+            }
+
+            if (!identity.HasClaim(c => c.Type == AuthConstants.AdminUserClaimName))
+            {
+                identity.AddClaim(new Claim(AuthConstants.AdminUserClaimName, "true"));
+            }
+
             context.Succeed(this);
             return Task.CompletedTask;
         }

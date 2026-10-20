@@ -19,7 +19,7 @@ namespace Movies.Application.Repositories
         }
         public async Task<bool> RateMovieAsync(Guid movieId, Guid userId, int rating, CancellationToken token = default)
         {
-            using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+            await using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var result = await connection.ExecuteAsync(new CommandDefinition("""
                     INSERT INTO ratings (movieid, userid, rating)
                     VALUES (@movieId, @userId, @rating)
@@ -30,7 +30,7 @@ namespace Movies.Application.Repositories
         }
         public async Task<float?> GetRatingAsync(Guid movieId, CancellationToken token = default)
         {
-            using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+            await using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             return await connection.QuerySingleOrDefaultAsync<float?>(new CommandDefinition("""
             select round(avg(r.rating), 1) from ratings r
             where movieid = @movieId
@@ -39,14 +39,14 @@ namespace Movies.Application.Repositories
 
         public async Task<(float? Rating, int? UserRating)> GetRatingAsync(Guid movieId, Guid userId, CancellationToken token = default)
         {
-            using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+            await using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             return await connection.QuerySingleOrDefaultAsync<(float?, int?)>(new CommandDefinition("""
-            select round(avg(rating), 1), 
-                   (select rating 
-                    from ratings 
-                    where movieid = @movieId 
+            select round(avg(rating), 1),
+                   (select rating
+                    from ratings
+                    where movieid = @movieId
                       and userid = @userId
-                    limit 1) 
+                    limit 1)
             from ratings
             where movieid = @movieId
             """, new { movieId, userId }, cancellationToken: token));
@@ -54,7 +54,7 @@ namespace Movies.Application.Repositories
 
         public async Task<bool> DeleteRatingAsync(Guid movieId, Guid userId, CancellationToken token = default)
         {
-            using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+            await using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             var result = await connection.ExecuteAsync(new CommandDefinition("""
             delete from ratings
             where movieid = @movieId
@@ -63,9 +63,9 @@ namespace Movies.Application.Repositories
             return result > 0;
         }
 
-        public async Task<IEnumerable<MovieRating>> movieRatingsAsync(Guid userId, CancellationToken token = default)
+        public async Task<IEnumerable<MovieRating>> GetRatingsForUserAsync(Guid userId, CancellationToken token = default)
         {
-            using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+            await using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
             return await connection.QueryAsync<MovieRating>(new CommandDefinition("""
                 select r.rating, r.movieid, m.slug
                 from ratings r

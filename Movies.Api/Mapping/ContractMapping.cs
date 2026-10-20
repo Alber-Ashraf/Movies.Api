@@ -67,12 +67,13 @@ namespace Movies.Api.Mapping
             {
                 Title = request.Title,
                 YearOfRelease = request.Year,
+                Genre = request.Genre,
                 SortField = request.SortBy?.Trim('+', '-'),
                 SortOrder = request.SortBy is null ? SortOrder.Unsorted
                     : request.SortBy.StartsWith('-')? SortOrder.Descending
                         : SortOrder.Ascending,
-                Page = request.Page.GetValueOrDefault(pagedRequest.DefaultPage),
-                PageSize = request.PageSize.GetValueOrDefault(pagedRequest.DefaultPage)
+                Page = request.Page.GetValueOrDefault(PagedRequest.DefaultPage),
+                PageSize = request.PageSize.GetValueOrDefault(PagedRequest.DefaultPageSize)
             };
         }
 

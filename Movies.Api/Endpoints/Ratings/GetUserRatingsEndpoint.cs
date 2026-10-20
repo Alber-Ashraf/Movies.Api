@@ -15,11 +15,17 @@ namespace Movies.Api.Endpoints.Ratings
                         CancellationToken token) =>
                     {
                         var userId = context.GetUserId();
-                        var ratings = await ratingService.movieRatingsAsync(userId!.Value, token);
-                        return TypedResults.Ok(ratings);
+                        if (userId is null)
+                        {
+                            return Results.Unauthorized();
+                        }
+                        var ratings = await ratingService.GetRatingsForUserAsync(userId.Value, token);
+                        var response = ratings.MapToResponse();
+                        return TypedResults.Ok(response);
                     })
                 .WithName(Name)
-                .Produces<MovieRatingResponse>(StatusCodes.Status200OK)
+                .Produces<IEnumerable<MovieRatingResponse>>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized)
                 .RequireAuthorization();
             return app;
         }
