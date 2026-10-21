@@ -9,6 +9,7 @@
             app.MapGetMovies();
             app.MapUpdateMovie();
             app.MapDeleteMovie();
+            app.MapSeedMovies();
             return app;
         }
     }

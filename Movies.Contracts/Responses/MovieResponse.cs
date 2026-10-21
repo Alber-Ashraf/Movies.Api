@@ -10,6 +10,8 @@ namespace Movies.Contracts.Responses
     {
         public required Guid Id { get; init; }
         public required string Title { get; init; }
+        public string? Description { get; init; }
+        public string? TrailerUrl { get; init; }
         public float? Rating { get; init; }
         public int? UserRating { get; init; }
         public required string Slug { get; init; }

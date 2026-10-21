@@ -22,6 +22,7 @@ namespace Movies.Application
             services.AddSingleton<IRatingService, RatingService>();
             services.AddSingleton<IMovieRepository, MovieRepository>();
             services.AddSingleton<IMovieService, MovieService>();
+            services.AddSingleton<IUserRepository, UserRepository>();
             services.AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton);
             return services;
         }
@@ -29,6 +30,7 @@ namespace Movies.Application
         {
             services.AddSingleton<IDbConnectionFactory>(_ => new DbConnectionFactory(connectionString));
             services.AddSingleton<DbInitializer>();
+            services.AddSingleton<DataSeeder>();
             return services;
         }
     }

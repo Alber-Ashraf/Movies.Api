@@ -24,8 +24,30 @@ namespace Movies.Application.DataBase
                     id UUID PRIMARY KEY,
                     slug TEXT NOT NULL,
                     title TEXT NOT NULL,
-                    yearofrelease INTEGER NOT NULL
+                    yearofrelease INTEGER NOT NULL,
+                    description TEXT,
+                    trailerurl TEXT
                 );
+                """);
+
+            await connection.ExecuteAsync("""
+                ALTER TABLE movies ADD COLUMN IF NOT EXISTS description TEXT;
+                ALTER TABLE movies ADD COLUMN IF NOT EXISTS trailerurl TEXT;
+                """);
+
+            await connection.ExecuteAsync("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id UUID PRIMARY KEY,
+                    email TEXT NOT NULL UNIQUE,
+                    fullname TEXT NOT NULL,
+                    passwordhash TEXT NOT NULL,
+                    role TEXT NOT NULL,
+                    createdat TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                );
+                """);
+
+            await connection.ExecuteAsync("""
+                CREATE UNIQUE INDEX IF NOT EXISTS users_email_idx ON users (LOWER(email));
                 """);
 
             await connection.ExecuteAsync("""

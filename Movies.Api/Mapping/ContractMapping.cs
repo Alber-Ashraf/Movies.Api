@@ -12,6 +12,8 @@ namespace Movies.Api.Mapping
             {
                 Id = Guid.NewGuid(),
                 Title = request.Title,
+                Description = request.Description,
+                TrailerUrl = request.TrailerUrl,
                 YearOfRelease = request.YearOfRelease,
                 Genres = request.Genres.ToList()
             };
@@ -22,6 +24,8 @@ namespace Movies.Api.Mapping
             {
                 Id = movie.Id,
                 Title = movie.Title,
+                Description = movie.Description,
+                TrailerUrl = movie.TrailerUrl,
                 Slug = movie.Slug,
                 Rating = movie.Rating,
                 UserRating = movie.UserRating,
@@ -46,6 +50,8 @@ namespace Movies.Api.Mapping
             {
                 Id = id,
                 Title = request.Title,
+                Description = request.Description,
+                TrailerUrl = request.TrailerUrl,
                 YearOfRelease = request.YearOfRelease,
                 Genres = request.Genres.ToList()
             };

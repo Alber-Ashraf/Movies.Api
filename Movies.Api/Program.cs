@@ -1,6 +1,7 @@
 
 using System.Text;
 using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -98,6 +99,7 @@ namespace Movies.Api
             });
 
             builder.Services.AddApplication();
+            builder.Services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
             builder.Services.AddDatabase(config["Database:ConnectionString"]!);
 
             var app = builder.Build();
@@ -143,6 +145,9 @@ namespace Movies.Api
 
             var dbInitializer = app.Services.GetRequiredService<DbInitializer>();
             await dbInitializer.InitializeAsync();
+
+            var dataSeeder = app.Services.GetRequiredService<DataSeeder>();
+            await dataSeeder.SeedAsync();
 
             app.Run();
         }

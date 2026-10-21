@@ -16,6 +16,7 @@ namespace Movies.Api
 
             public const string Rate = $"{Base}/{{id:guid}}/ratings";
             public const string DeleteRating = $"{Base}/{{id:guid}}/ratings";
+            public const string Seed = $"{Base}/seed";
         }
 
         public static class Ratings
@@ -38,6 +39,9 @@ namespace Movies.Api
 
             public const string Token = $"{Base}/token";
             public const string TokenDirect = "token";
+            public const string Register = $"{Base}/register";
+            public const string Login = $"{Base}/login";
+            public const string Me = $"{Base}/me";
         }
     }
 }

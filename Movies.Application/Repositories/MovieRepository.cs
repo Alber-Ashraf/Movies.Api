@@ -24,8 +24,8 @@ namespace Movies.Application.Repositories
             await using var transaction = await connection.BeginTransactionAsync(token);
 
             var result = await connection.ExecuteAsync(new CommandDefinition("""
-                INSERT INTO movies (id, slug, title, yearofrelease)
-                VALUES (@Id, @Slug, @Title, @YearOfRelease);
+                INSERT INTO movies (id, slug, title, yearofrelease, description, trailerurl)
+                VALUES (@Id, @Slug, @Title, @YearOfRelease, @Description, @TrailerUrl);
                 """, movie, transaction: transaction, cancellationToken: token));
 
             if (result > 0 && movie.Genres.Count > 0)
@@ -110,7 +110,7 @@ namespace Movies.Application.Repositories
 
             var orderClause = sortField is not null
                 ? $", m.{sortField} order by m.{sortField} {(options.SortOrder == SortOrder.Ascending ? "asc" : "desc")}"
-                : "order by m.id asc";
+                : " order by m.id asc";
 
             var result = await connection.QueryAsync(new CommandDefinition($"""
                 select m.* ,
@@ -143,6 +143,8 @@ namespace Movies.Application.Repositories
             {
                 Id = x.id,
                 Title = x.title,
+                Description = x.description,
+                TrailerUrl = x.trailerurl,
                 YearOfRelease = x.yearofrelease,
                 Rating = (float?)x.rating,
                 UserRating = (int?)x.userrating,
@@ -171,7 +173,7 @@ namespace Movies.Application.Repositories
 
             var result = await connection.ExecuteAsync(new CommandDefinition("""
                 UPDATE movies
-                SET slug = @Slug, title = @Title, yearofrelease = @YearOfRelease
+                SET slug = @Slug, title = @Title, yearofrelease = @YearOfRelease, description = @Description, trailerurl = @TrailerUrl
                 WHERE id = @Id;
                 """, movie, transaction: transaction, cancellationToken: token));
 

@@ -5,6 +5,7 @@ namespace Movies.Api.Endpoints.Identity
         public static IEndpointRouteBuilder MapIdentityEndpoints(this IEndpointRouteBuilder app)
         {
             app.MapTokenEndpoint();
+            app.MapAuthEndpoints();
             return app;
         }
     }
